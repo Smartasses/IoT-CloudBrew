@@ -16,31 +16,48 @@ RF24 radio(7, 8);
 RF24Network network(radio);
 RF24Mesh mesh(radio, network);
 
-#define nodeID 1
-
-void setup() {
-  pinMode(ledPin, OUTPUT);
-  pinMode(buttonPin, INPUT);
-}
-
 struct payload_t {
   unsigned long msToHigh;
 };
 
-void loop() {
- 
- sendButtonState();
- checkForMessage();
- toggleLed();
+void setup() {
+  Serial.begin(115200);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
 
+  mesh.setNodeID(1);
+  mesh.begin();
 }
 
+
+void loop() {
+  mesh.update();
+  sendButtonState();
+  checkForMessage();
+  toggleLed();
+  renewConnection();
+}
+
+long timeToRenew;
+void renewConnection(){
+  if(millis() > timeToRenew)
+  {
+    mesh.checkConnection();
+        mesh.renewAddress();
+        timeToRenew =  millis() + 5000;
+  }
+}
 void sendButtonState()
 {
   buttonState = digitalRead(buttonPin);
   if(buttonState == HIGH && previousState != buttonState)
   {
-    mesh.write(&buttonState, 'B', sizeof(buttonState));
+    if(!mesh.write(&buttonState, 'B', sizeof(buttonState)))
+    {
+      if ( ! mesh.checkConnection() ) {
+        mesh.renewAddress();
+      }
+    }
   }
  previousState = buttonState;
 }
@@ -48,9 +65,9 @@ void sendButtonState()
 void toggleLed()
 {
   int newLedState;
-  if(millis() < turnLightsOfAt && ledState == LOW)
+  if((millis() < turnLightsOfAt) && ledState == LOW)
   {
-    newLedState == HIGH;
+    newLedState = HIGH;
   }
   else
   {
@@ -58,6 +75,7 @@ void toggleLed()
   }
   if(ledState != newLedState)
   {
+
     ledState = newLedState;
     digitalWrite(ledPin, ledState);
   }
@@ -69,6 +87,6 @@ void checkForMessage(){
     payload_t payload;
     network.read(header, &payload, sizeof(payload));
     turnLightsOfAt = millis() + payload.msToHigh;
+    Serial.println(payload.msToHigh);
   }
 }
-
