@@ -3,7 +3,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Media;
 using CloudBrew.IoT.Win10.Annotations;
 using Microsoft.Azure.Devices.Client;
 
@@ -16,6 +19,7 @@ namespace CloudBrew.IoT.Win10
         private SerialCommunication _serialCommunication;
         private StringBuilder _sbLog;
         private IoTHubCommunication _iotHubCommunication;
+        private bool _ledOn;
 
         public MainViewModel(CoreDispatcher dispatcher)
         {
@@ -42,6 +46,22 @@ namespace CloudBrew.IoT.Win10
             WriteLog("Received message from the hub: " + e.Message);
             WriteLog("Sending serial message: " + e.Message);
             _serialCommunication.SendAsync(e.Message);
+            Task.Run(async () =>
+            {
+                ChangeLedState(true);
+                await Task.Delay(int.Parse(e.Message));
+                ChangeLedState(false);
+            });
+        }
+        public SolidColorBrush LedColor
+        {
+            get { return _ledOn ? new SolidColorBrush(Color.FromArgb(255, 255, 255, 0)) : new SolidColorBrush(Color.FromArgb(255, 0, 0, 0)); }
+        }
+
+        public void ChangeLedState(bool ledState)
+        {
+            _ledOn = ledState;
+            OnPropertyChanged(nameof(LedColor));
         }
 
         private void OnSerialMessage(object sender, MessageEventArgs e)
