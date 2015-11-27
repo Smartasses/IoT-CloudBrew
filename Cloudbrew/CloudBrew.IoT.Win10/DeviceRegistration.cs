@@ -45,7 +45,9 @@ namespace CloudBrew.IoT.Win10
                 var response = await _httpClient.PostAsync("api/devices", new StringContent(""));
                 response.EnsureSuccessStatusCode();
                 var contentText = await response.Content.ReadAsStringAsync();
-                return JsonConvert.DeserializeObject<Device>(contentText);
+                var result = JsonConvert.DeserializeObject<Device>(contentText);
+                ApplicationData.Current.LocalSettings.Values.Add("deviceconfig", result.Id.ToString());
+                return result;
             }
         }
     }
