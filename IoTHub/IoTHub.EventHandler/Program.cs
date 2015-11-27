@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Security.Policy;
 using System.Text;
@@ -12,28 +13,18 @@ using Newtonsoft.Json;
 
 namespace IoTHub.EventHandler
 {
-    // To learn more about Microsoft Azure WebJobs SDK, please see http://go.microsoft.com/fwlink/?LinkID=320976
-    class Program
+    public class Program
     {
         private static EventHubClient _eventHubClient;
         private static ServiceClient _serviceClient;
         private static JobHost host;
-        // Please set the following connection strings in app.config for this WebJob to run:
-        // AzureWebJobsDashboard and AzureWebJobsStorage
         static void Main()
         {
             host = new JobHost();
-            // The following code ensures that the WebJob will be running continuously
-
             var connectionString = ConfigurationManager.ConnectionStrings["IoTHub"].ConnectionString;
             _eventHubClient = EventHubClient.CreateFromConnectionString(connectionString, "messages/events");
             _serviceClient = ServiceClient.CreateFromConnectionString(connectionString);
-            var tasks = new List<Task>();
-            foreach (var partitionId in _eventHubClient.GetRuntimeInformation().PartitionIds)
-            {
-                tasks.Add(Listen(partitionId));
-            }
-            Task.WaitAll(tasks.ToArray());
+            Task.WaitAll(_eventHubClient.GetRuntimeInformation().PartitionIds.Select(Listen).ToArray());
             host.RunAndBlock();
         }
 
@@ -44,22 +35,21 @@ namespace IoTHub.EventHandler
             while (true)
             {
                 var eventData = await receiver.ReceiveAsync();
+                if (eventData == null) continue;
                 var message = Encoding.ASCII.GetString(eventData.GetBytes());
-                var result = JsonConvert.DeserializeObject<IoTButtonChangedMessage>(message);
                 var deviceId = eventData.SystemProperties["iothub-connection-device-id"].ToString();
-                var buttonState = result.ButtonPressed;
                 Console.WriteLine("Message received: {0}", message);
-                await host.CallAsync(typeof(Program).GetMethod("HandleButtonEvent"), new { deviceId, buttonState });
+                await host.CallAsync(typeof(Program).GetMethod("HandleButtonEvent"), new { deviceId, message });
             }
         }
 
         [NoAutomaticTrigger]
-        public static async Task HandleButtonEvent(Guid deviceId, bool buttonState)
+        public static async Task HandleButtonEvent(Guid deviceId, string message, TextWriter log)
         {
-            var seralized = JsonConvert.SerializeObject(new IoTChangeLightMessage { LightOn = buttonState });
-            var sendCommand = new Message(Encoding.ASCII.GetBytes(seralized));
+            var response = "1000";
+            var sendCommand = new Message(Encoding.ASCII.GetBytes(response));
             await _serviceClient.SendAsync(deviceId.ToString(), sendCommand);
-            Console.WriteLine("Message send: {0}", seralized);
+            log.WriteLine("Message send: {0}", response);
         }
     }
 

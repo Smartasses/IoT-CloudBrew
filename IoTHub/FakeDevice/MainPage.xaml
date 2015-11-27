@@ -7,9 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d" Loaded="MainPage_OnLoaded">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="83,95,0,0" VerticalAlignment="Top"/>
-        <Ellipse x:Name="Ellipse" Fill="#000000" HorizontalAlignment="Left" Height="100" Margin="83,309,0,0" Stroke="Black" VerticalAlignment="Top" Width="100"/>
-
+    <Grid Background="White">
+        <Ellipse Fill="{Binding Path=LedColor}"></Ellipse>
     </Grid>
 </Page>

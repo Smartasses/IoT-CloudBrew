@@ -11,7 +11,7 @@ namespace IoTHub.Api.Controllers
 {
     public class DevicesController : ApiController
     {
-        private RegistryManager _manager;
+        private readonly RegistryManager _manager;
 
         public DevicesController()
         {
