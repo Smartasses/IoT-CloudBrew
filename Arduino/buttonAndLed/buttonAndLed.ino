@@ -75,7 +75,7 @@ void toggleLed()
   }
   if(ledState != newLedState)
   {
-
+    Serial.println("Turning " + newLedState);
     ledState = newLedState;
     digitalWrite(ledPin, ledState);
   }

@@ -15,13 +15,12 @@ struct payload_t {
 
 void setup() {
   Serial.begin(115200);
-   mesh.setNodeID(0);
-    mesh.begin();
+  mesh.setNodeID(0);
+  mesh.begin();
 }
 
 void sendButtonMessage()
 {
-     // Check for incoming data from the sensors
   if(network.available()){
     RF24NetworkHeader header;
     network.peek(header);
@@ -38,41 +37,13 @@ void sendCommand()
 {
   if (Serial.available() > 0)
   {
-    
-      unsigned long lightTime = Serial.parseInt();
-       payload_t payload = {lightTime};
-       Serial.println(payload.msToHigh);
-       Serial.print("connections ");
-       Serial.println(sizeof(mesh.addrList) / sizeof(int));
-       for (int i = 0; i < mesh.addrListTop; i++) {
-        
-         RF24NetworkHeader header(mesh.addrList[i].address, OCT); //Constructing a header
-        network.write(header, &payload, sizeof(payload));
-        
-      
-    }
-      
+    unsigned long lightTime = Serial.parseInt();
+    payload_t payload = {lightTime};
+    for (int i = 0; i < mesh.addrListTop; i++) {
+      RF24NetworkHeader header(mesh.addrList[i].address, OCT);
+      network.write(header, &payload, sizeof(payload));
+    }  
   }
-}
-
-long timetosend;
-void alwaysSend()
-{
-  if(millis() > timetosend)
-  {
-   unsigned long lightTime = 1000L;
-  payload_t payload = {lightTime};
-  Serial.println("time to send");
-  for (int i = 0; i < mesh.addrListTop; i++) {
-        
-         RF24NetworkHeader header(mesh.addrList[i].address, OCT); //Constructing a header
-       network.write(header, &payload, sizeof(payload));
-        
-      
-    }
-    timetosend = millis() + 5000;
-  }
- 
 }
 
 void loop() {
@@ -80,7 +51,6 @@ void loop() {
    mesh.DHCP();
    sendButtonMessage();
    sendCommand();
-   //alwaysSend();
 }
 
 
