@@ -3,7 +3,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Media;
 using CloudBrew.IoT.Win10.Annotations;
 
 namespace CloudBrew.IoT.Win10
@@ -14,6 +17,7 @@ namespace CloudBrew.IoT.Win10
         private string _deviceId;
         private SerialCommunication _serialCommunication;
         private StringBuilder _sbLog;
+        private bool _ledOn;
 
         public MainViewModel(CoreDispatcher dispatcher)
         {
@@ -33,12 +37,28 @@ namespace CloudBrew.IoT.Win10
             _serialCommunication = new SerialCommunication(serialPorts.First());
             _serialCommunication.OnMessage += OnSerialMessage;
         }
+        public SolidColorBrush LedColor
+        {
+            get { return _ledOn ? new SolidColorBrush(Color.FromArgb(255, 255, 255, 0)) : new SolidColorBrush(Color.FromArgb(255, 0, 0, 0)); }
+        }
+
+        public void ChangeLedState(bool ledState)
+        {
+            _ledOn = ledState;
+            OnPropertyChanged(nameof(LedColor));
+        }
 
         private void OnSerialMessage(object sender, MessageEventArgs e)
         {
             WriteLog(e.Message);
             WriteLog("Sending message: 1000");
             _serialCommunication.SendAsync("1000");
+            Task.Run(async () =>
+            {
+                ChangeLedState(true);
+                await Task.Delay(1000);
+                ChangeLedState(false);
+            });
         }
 
         public string DeviceId
