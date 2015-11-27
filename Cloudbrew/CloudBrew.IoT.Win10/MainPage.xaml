@@ -13,5 +13,6 @@
             <TextBlock Text="{Binding DeviceId, Mode=TwoWay}"></TextBlock>
             <TextBlock Text="{Binding Log, Mode=TwoWay}"></TextBlock>
         </StackPanel>
+        <Ellipse Fill="{Binding Path=LedColor, Mode=TwoWay}" Margin="300,0,0,0"></Ellipse>
     </Grid>
 </Page>
