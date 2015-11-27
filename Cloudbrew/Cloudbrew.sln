@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudBrew.IoT.ApiApp", "Clo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudBrew.IoT.Win10", "CloudBrew.IoT.Win10\CloudBrew.IoT.Win10.csproj", "{1DAAECD1-92C8-47AA-9783-F910D4A28776}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CloudBrew.IoT.WebJob", "CloudBrew.IoT.WebJob\CloudBrew.IoT.WebJob.csproj", "{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,22 @@ Global
 		{1DAAECD1-92C8-47AA-9783-F910D4A28776}.Release|x86.ActiveCfg = Release|x86
 		{1DAAECD1-92C8-47AA-9783-F910D4A28776}.Release|x86.Build.0 = Release|x86
 		{1DAAECD1-92C8-47AA-9783-F910D4A28776}.Release|x86.Deploy.0 = Release|x86
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|ARM.Build.0 = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|x64.Build.0 = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Debug|x86.Build.0 = Debug|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|ARM.ActiveCfg = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|ARM.Build.0 = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|x64.ActiveCfg = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|x64.Build.0 = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|x86.ActiveCfg = Release|Any CPU
+		{DFA488C7-2F0A-4D66-8FAB-FCCDFE45FDCE}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
