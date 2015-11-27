@@ -11,6 +11,7 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
             <TextBlock Text="{Binding DeviceId, Mode=TwoWay}"></TextBlock>
+            <TextBlock Text="{Binding Log, Mode=TwoWay}"></TextBlock>
         </StackPanel>
     </Grid>
 </Page>
