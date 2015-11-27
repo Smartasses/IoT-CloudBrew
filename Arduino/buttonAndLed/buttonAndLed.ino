@@ -21,7 +21,7 @@ struct payload_t {
 };
 
 void setup() {
-  Serial.begin(115200);
+ // Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
   pinMode(buttonPin, INPUT);
 
@@ -42,6 +42,7 @@ long timeToRenew;
 void renewConnection(){
   if(millis() > timeToRenew)
   {
+  //  Serial.println("Renewing connection");
     mesh.checkConnection();
         mesh.renewAddress();
         timeToRenew =  millis() + 5000;
@@ -52,8 +53,10 @@ void sendButtonState()
   buttonState = digitalRead(buttonPin);
   if(buttonState == HIGH && previousState != buttonState)
   {
+    //    Serial.println("Sending button state");
     if(!mesh.write(&buttonState, 'B', sizeof(buttonState)))
     {
+    //          Serial.println("Send failed");
       if ( ! mesh.checkConnection() ) {
         mesh.renewAddress();
       }
@@ -64,20 +67,24 @@ void sendButtonState()
 
 void toggleLed()
 {
-  int newLedState;
-  if((millis() < turnLightsOfAt) && ledState == LOW)
+  bool turnOnLed = false;
+  if((millis() < turnLightsOfAt))
   {
-    newLedState = HIGH;
+    turnOnLed = true;
+  //  Serial.print("turn off at turnLightsOfAt");
+  //  Serial.println(turnLightsOfAt);
   }
-  else
+  if((turnOnLed == true) && (ledState == LOW))
   {
-    newLedState = LOW;
+     ledState = HIGH;
+     digitalWrite(ledPin, ledState);
+   //  Serial.println("Turn on");
   }
-  if(ledState != newLedState)
+  else if((turnOnLed == false) && (ledState == HIGH))
   {
-    Serial.println("Turning " + newLedState);
-    ledState = newLedState;
+    ledState = LOW;
     digitalWrite(ledPin, ledState);
+ //   Serial.println("Turn off");
   }
 }
 
@@ -87,6 +94,6 @@ void checkForMessage(){
     payload_t payload;
     network.read(header, &payload, sizeof(payload));
     turnLightsOfAt = millis() + payload.msToHigh;
-    Serial.println(payload.msToHigh);
+//    Serial.println(payload.msToHigh);
   }
 }
