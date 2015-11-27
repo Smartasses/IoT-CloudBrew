@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -25,6 +24,11 @@ namespace CloudBrew.IoT.Win10
         public MainPage()
         {
             this.InitializeComponent();
+        }
+
+        private void MainPage_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            this.DataContext = new MainViewModel(Dispatcher);
         }
     }
 }
