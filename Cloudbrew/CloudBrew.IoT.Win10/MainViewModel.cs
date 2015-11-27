@@ -5,6 +5,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.UI.Core;
 using CloudBrew.IoT.Win10.Annotations;
+using Microsoft.Azure.Devices.Client;
 
 namespace CloudBrew.IoT.Win10
 {
@@ -14,6 +15,7 @@ namespace CloudBrew.IoT.Win10
         private string _deviceId;
         private SerialCommunication _serialCommunication;
         private StringBuilder _sbLog;
+        private IoTHubCommunication _iotHubCommunication;
 
         public MainViewModel(CoreDispatcher dispatcher)
         {
@@ -21,7 +23,6 @@ namespace CloudBrew.IoT.Win10
             DeviceId = "**Device id**";
             Init();
             _sbLog = new StringBuilder();
-            WriteLog("Registered!");
         }
 
         private async void Init()
@@ -32,13 +33,22 @@ namespace CloudBrew.IoT.Win10
             var serialPorts = await SerialCommunication.ListAvailablePorts();
             _serialCommunication = new SerialCommunication(serialPorts.First());
             _serialCommunication.OnMessage += OnSerialMessage;
+            _iotHubCommunication = new IoTHubCommunication(device);
+            _iotHubCommunication.OnMessage += OnHubMessage;
+        }
+
+        private void OnHubMessage(object sender, MessageEventArgs e)
+        {
+            WriteLog("Received message from the hub: " + e.Message);
+            WriteLog("Sending serial message: " + e.Message);
+            _serialCommunication.SendAsync(e.Message);
         }
 
         private void OnSerialMessage(object sender, MessageEventArgs e)
         {
             WriteLog(e.Message);
-            WriteLog("Sending message: 1000");
-            _serialCommunication.SendAsync("1000");
+            WriteLog("Sending message: to the iot hub");
+            _iotHubCommunication.SendAsync(e.Message);
         }
 
         public string DeviceId
